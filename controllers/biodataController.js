@@ -1,6 +1,7 @@
 const csvtojson = require('csvtojson');
 const pool = require('../utils/db')
 const validateEntry = require('../utils/biodataSchema')
+const zlib = require('zlib');
 
 // Serve the HTML form for file upload
 const getUploader = (req, res) => {
@@ -13,7 +14,8 @@ const getUsers = (req, res) => {
         if (error) {
             res.status(500).json({ error: 'Error retrieving data from the database' });
         } else {
-            res.status(200).json(results);
+            const finRes = zlib.gzipSync(JSON.stringify(results))
+            res.status(200).send(finRes);
         }
     });
 };
