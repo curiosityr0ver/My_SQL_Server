@@ -1,14 +1,6 @@
-const mysql = require('mysql2');
 const csvtojson = require('csvtojson');
-const multer = require('multer');
 const pool = require('../utils/db')
 const validateEntry = require('../utils/biodataSchema')
-
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-
 
 // Serve the HTML form for file upload
 const getUploader = (req, res) => {
@@ -80,4 +72,4 @@ const uploadUsers = (req, res) => {
 };
 
 
-module.exports = { getUsers, createUser, uploadUsers }
+module.exports = { getUsers, getUploader, createUser, uploadUsers }

@@ -1,11 +1,17 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const biodataRouter = require("./routes/biodataRouter")
+const authorRouter = require("./routes/authorRouter")
+const employeeRouter = require("./routes/employeeRouter")
+
 
 const app = express()
 app.use(bodyParser.json());
 
 app.use('/biodata', biodataRouter);
+app.use('/author', authorRouter);
+app.use('/employee', employeeRouter);
+
 
 
 
