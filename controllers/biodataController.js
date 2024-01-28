@@ -1,6 +1,7 @@
 const csvtojson = require('csvtojson');
 const pool = require('../utils/db')
 const validateEntry = require('../utils/biodataSchema')
+const sendResponse = require('../utils/response')
 const zlib = require('zlib');
 
 // Serve the HTML form for file upload
@@ -10,13 +11,10 @@ const getUploader = (req, res) => {
 
 const getUsers = (req, res) => {
 
-    pool.query('SELECT * FROM biodata', (error, results) => {
-        if (error) {
-            res.status(500).json({ error: 'Error retrieving data from the database' });
-        } else {
-            const finRes = zlib.gzipSync(JSON.stringify(results))
-            res.status(200).send(finRes);
-        }
+    pool.query('SELECT * FROM biodata', (error, output) => {
+        // res.status(500).json({ error: 'Error retrieving data from the database' });
+        sendResponse(res, error, output);
+
     });
 };
 
@@ -29,19 +27,25 @@ const createUser = (req, res) => {
 
     pool.query('INSERT INTO biodata SET ?', [data], (error, result) => {
         if (error) {
-            res.status(500).json({ error: 'Error inserting data into the database' });
+            sendResponse(res, error, { error: 'Error inserting data into the database' });
+            // res.status(500).json({ error: 'Error inserting data into the database' });
         } else {
-            res.status(201).json({ message: 'Record created successfully', id: result.insertId });
+            sendResponse(res, error, { output: 'Record created successfully', NID: data.NID });
+            // res.status(201).json({ message: 'Record created successfully', id: result.insertId });
         }
     });
 };
 
 const uploadUsers = (req, res) => {
     if (!req.file) {
-        return res.status(400).send('No file uploaded.');
+        // return res.status(400).send('No file uploaded.');
+        response(res, error, 'No file uploaded');
+
     }
 
-    pool.query("TRUNCATE TABLE biodata", (error, result) => { });
+    pool.query("TRUNCATE TABLE biodata", (error, result) => {
+        sendResponse(res, error, result);
+    });
 
     const csvData = req.file.buffer.toString('utf8');
 
@@ -69,7 +73,8 @@ const uploadUsers = (req, res) => {
                 }
             });
         })
-        res.json({ invalidEntries });
+        sendResponse(res, null, { invalidEntries });
+        // res.json({ invalidEntries });
     });
 };
 
