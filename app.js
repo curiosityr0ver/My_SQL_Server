@@ -3,20 +3,23 @@ const bodyParser = require('body-parser');
 const biodataRouter = require("./routes/biodataRouter")
 const authorRouter = require("./routes/authorRouter")
 const employeeRouter = require("./routes/employeeRouter")
+// const { customerLogin, customerRegister } = require('./routes/customer')
+const verifyToken = require("./utils/validation")
 
 
 const app = express()
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-    // Enable compression for all responses
-    res.setHeader('Content-Encoding', 'gzip');
-    res.setHeader('Content-Type', 'application/json');
-    next();
-});
+// app.use((req, res, next) => {
+//     // Enable compression for all responses
+//     res.setHeader('Content-Encoding', 'gzip');
+//     res.setHeader('Content-Type', 'application/json');
+//     next();
+// });
 
-app.use('/biodata', biodataRouter);
-app.use('/author', authorRouter);
+// app.use('/', customerRouter);
+app.use('/biodata', verifyToken, biodataRouter);
+app.use('/author', verifyToken, authorRouter);
 app.use('/employee', employeeRouter);
 
 

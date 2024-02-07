@@ -8,6 +8,6 @@ const dbConfig = {
     database: process.env.DATABASE
 };
 
-const pool = mysql.createConnection(dbConfig);
+const pool = mysql.createPool(dbConfig);
 
 module.exports = pool
